@@ -23,3 +23,22 @@ Route::get('/about', 'StaticPagesController@about')->name('about');
 
 Route::get('signup', 'UsersController@create')->name('signup');
 
+/*
+Route::get('/users', 'UsersController@index')->name('users.index');
+Route::get('/users/create', 'UsersController@create')->name('users.create');
+Route::get('/users/{user}', 'UsersController@show')->name('users.show');
+Route::post('/users', 'UsersController@store')->name('users.store');
+Route::get('/users/{user}/edit', 'UsersController@edit')->name('users.edit');
+Route::patch('/users/{user}', 'UsersController@update')->name('users.update');
+Route::delete('/users/{user}', 'UsersController@destroy')->name('users.destroy');
+
+GET|HEAD        users ..... users.index › UsersController@index
+POST            users ..... users.store › UsersController@store
+GET|HEAD        users/create ..... users.create › UsersController@create
+GET|HEAD        users/{user} ..... users.show › UsersController@show
+PUT|PATCH       users/{user} ..... users.update › UsersController@update
+DELETE          users/{user} ..... users.destroy › UsersController@destroy
+GET|HEAD        users/{user}/edit ..... users.edit › UsersController@edit
+*/
+Route::resource('users', 'UsersController');
+
