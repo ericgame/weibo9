@@ -9,6 +9,8 @@
     </div>
     <div class="card-body">
       <form method="POST" action="{{ route('users.store') }}">
+          <!-- @csrf -->
+          {{ csrf_field() }}
           <div class="mb-3">
             <label for="name">名稱：</label>
             <input type="text" name="name" class="form-control" value="{{ old('name') }}">
