@@ -17,13 +17,15 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+//靜態頁面
 Route::get('/', 'StaticPagesController@home')->name('home');
 Route::get('/help', 'StaticPagesController@help')->name('help');
 Route::get('/about', 'StaticPagesController@about')->name('about');
 
+//會員註冊
 Route::get('signup', 'UsersController@create')->name('signup');
 
-/*
+/*會員註冊
 Route::get('/users', 'UsersController@index')->name('users.index');
 Route::get('/users/create', 'UsersController@create')->name('users.create');
 Route::get('/users/{user}', 'UsersController@show')->name('users.show');
@@ -42,3 +44,7 @@ GET|HEAD        users/{user}/edit ..... users.edit › UsersController@edit
 */
 Route::resource('users', 'UsersController');
 
+//會員登入、登出
+Route::get('login', 'SessionsController@create')->name('login');
+Route::post('login', 'SessionsController@store')->name('login');
+Route::delete('logout', 'SessionsController@destroy')->name('logout');
