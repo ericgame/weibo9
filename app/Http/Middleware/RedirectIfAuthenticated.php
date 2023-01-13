@@ -23,6 +23,7 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                session()->flash('info', '您已登入，無需再次操作。');
                 return redirect(RouteServiceProvider::HOME);
             }
         }
