@@ -50,4 +50,61 @@ class PasswordController extends Controller
         session()->flash('success', '重置郵件發送成功，請查收 !');
         return redirect()->back();
     }
+
+    public function showResetForm(Request $request)
+    {
+        $token = $request->route()->parameter('token');
+        return view('auth.passwords.reset', compact('token'));
+    }
+
+    public function reset(Request $request)
+    {
+        // 1.驗證數據是否正確
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+        ]);
+        $email = $request->email;
+        $token = $request->token;
+        $expires = 60 * 10; // 找回密碼鏈接的有效時間 (單位: 秒)
+
+        // 2.獲取對應用戶
+        $user = User::where("email", $email)->first();
+
+        // 3.如果不存在
+        if (is_null($user)) {
+            session()->flash('danger', '此 email 未註冊 !');
+            return redirect()->back()->withInput();
+        }
+
+        // 4.讀取重置的記錄
+        $record = (array) DB::table('password_resets')->where('email', $email)->first();
+
+        // 5.記錄存在
+        if ($record) {
+            // 5.1.檢查是否過期
+            if (Carbon::parse($record['created_at'])->addSeconds($expires)->isPast()) {
+                session()->flash('danger', '鏈接已過期，請重新嘗試 !');
+                return redirect()->back();
+            }
+
+            // 5.2.檢查是否正確
+            if (! Hash::check($token, $record['token'])) {
+                session()->flash('danger', '令牌錯誤 !');
+                return redirect()->back();
+            }
+
+            // 5.3.一切正常，更新用戶密碼
+            $user->update(['password' => bcrypt($request->password)]);
+
+            // 5.4.提示用戶更新成功
+            session()->flash('success', '密碼重置成功，請使用新密碼登入 !');
+            return redirect()->route('login');
+        }
+
+        // 6.記錄不存在
+        session()->flash('danger', '未找到重置記錄 !');
+        return redirect()->back();
+    }
 }
