@@ -104,7 +104,21 @@ class UsersController extends Controller
         return back();
     }
 
+    //在.env設定 from(MAIL_FROM_ADDRESS)、name(MAIL_FROM_NAME)
     public function sendEmailConfirmationTo($user)
+    {
+        $view = 'emails.confirm';
+        $data = compact('user');
+        $to = $user->email;
+        $subject = "感謝註冊 Weibo 9 應用！請確認你的郵箱。";
+
+        Mail::send($view, $data, function ($message) use ($to, $subject) {
+            $message->to($to)->subject($subject);
+        });
+    }
+
+    //在controller設定 from、name
+    public function sendEmailConfirmationTo_old($user)
     {
         $view = 'emails.confirm';
         $data = compact('user');
